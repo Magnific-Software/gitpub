@@ -2,6 +2,8 @@
 
 A Dart repository as a server application that provides Dart code from Git sources and tags as Dart versions. Built using [Shelf](https://pub.dev/packages/shelf) framework and configured to run with [Docker](https://www.docker.com/).
 
+This is a REST API implementation of hosted pub package repository for dart as per [Hosted Pub Repository Specification Version 2](https://github.com/dart-lang/pub/blob/master/doc/repository-spec-v2.md).
+
 ## Features
 
 - RESTful API server built with Shelf framework
