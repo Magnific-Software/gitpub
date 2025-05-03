@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import '/core/controller.dart';
 import '/core/logger.dart';
+import '../../data/package_request.dart';
 
 class RepositoryPackageApi extends RouteController {
   RepositoryPackageApi(super.router);
@@ -16,8 +17,11 @@ class RepositoryPackageApi extends RouteController {
 
   FutureOr<Response> listVersionsOfPackage(Request request) {
     final logger = logging.of(request);
-    logger.info('Getting repository ${request.params['repository']}');
+    final packageRequest = PackageRequest.fromJson(request.params);
+    logger.info('Getting repository ${packageRequest.repository}');
+
     logger.config(json.encode({'params': request.params}));
+
     return Response.ok(
       json.encode({
         "name": request.params['package'],

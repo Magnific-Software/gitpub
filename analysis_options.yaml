@@ -17,8 +17,9 @@ analyzer:
     constant_identifier_names: ignore
     implicit_call_tearoffs: ignore
     dangling_library_doc_comments: ignore
+    invalid_annotation_target: ignore
 formatter:
-  page_width: 120
+  page_width: 140
 linter:
   rules:
     prefer_relative_imports: true

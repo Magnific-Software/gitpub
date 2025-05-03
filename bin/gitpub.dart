@@ -9,10 +9,7 @@ import 'package:shelf_router/shelf_router.dart';
 
 void main(List<String> args) async {
   // Configure a pipeline that logs requests.
-  final handler = Pipeline()
-      .addMiddleware(helmet())
-      .addMiddleware(logRequests(logger: logging.server))
-      .addHandler(RootApi(Router()));
+  final handler = Pipeline().addMiddleware(helmet()).addMiddleware(logRequests(logger: logging.server)).addHandler(RootApi(Router()));
 
   // Use any available host or container IP (usually `0.0.0.0`).
   final ip = InternetAddress.anyIPv4;
