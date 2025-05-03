@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:logging/logging.dart';
 import 'package:shelf/shelf.dart';
+import 'package:stack_trace/stack_trace.dart';
 
 final logging = () {
   hierarchicalLoggingEnabled = true;
@@ -39,7 +40,14 @@ void _onLogs(LogRecord record) {
     if (record.error != null) {
       logBuffer.writeln(record.error);
     }
-    logBuffer.writeln(record.stackTrace ?? StackTrace.current);
+    final stackTrace = record.stackTrace;
+    final Chain chain;
+    if (stackTrace != null) {
+      chain = Chain.forTrace(stackTrace).terse;
+    } else {
+      chain = Chain.current();
+    }
+    logBuffer.writeln(chain);
   }
   print(logBuffer.toString());
 }
