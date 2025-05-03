@@ -1,17 +1,36 @@
-A server app built using [Shelf](https://pub.dev/packages/shelf),
-configured to enable running with [Docker](https://www.docker.com/).
+# GitPub
 
-This sample code handles HTTP GET requests to `/` and `/echo/<message>`
+A Dart repository as a server application that provides Dart code from Git sources and tags as Dart versions. Built using [Shelf](https://pub.dev/packages/shelf) framework and configured to run with [Docker](https://www.docker.com/).
 
-# Running the sample
+## Features
+
+- RESTful API server built with Shelf framework
+- Git repository integration for code versioning
+- Security headers with shelf_helmet
+- Structured logging system
+- Modular architecture with clear separation of concerns
+
+## Project Structure
+
+```
+lib/
+├── api/        # API endpoints, routing and business logic
+├── usecase/    # Additional shared business logic business logic
+├── core/       # Core functionality and base classes
+├── data/       # Data classes
+├── repository/ # Data access and caching from services
+└── service/    # Services like fetching data from remote
+```
+
+# Running the server
 
 ## Running with the Dart SDK
 
-You can run the example with the [Dart SDK](https://dart.dev/get-dart)
+You can run the server with the [Dart SDK](https://dart.dev/get-dart)
 like this:
 
 ```
-$ dart run bin/server.dart
+$ dart run
 Server listening on port 8080
 ```
 

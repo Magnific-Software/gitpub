@@ -12,6 +12,31 @@
 # The core lints are also what is used by pub.dev for scoring packages.
 
 include: package:lints/recommended.yaml
+analyzer:
+  errors:
+    constant_identifier_names: ignore
+    implicit_call_tearoffs: ignore
+    dangling_library_doc_comments: ignore
+formatter:
+  page_width: 120
+linter:
+  rules:
+    prefer_relative_imports: true
+    directives_ordering: true
+    always_use_package_imports: false
+    # temporarily allow dynamic calls
+    avoid_dynamic_calls: false
+    avoid_slow_async_io: true
+    avoid_type_to_string: true
+    close_sinks: true
+    cancel_subscriptions: true
+    combinators_ordering: true
+    deprecated_consistency: true
+    # Doesn't work with formatter
+    # require_trailing_commas: true
+    sort_constructors_first: true
+    sort_pub_dependencies: true
+    sort_unnamed_constructors_first: true
 
 # Uncomment the following section to specify additional rules.
 
