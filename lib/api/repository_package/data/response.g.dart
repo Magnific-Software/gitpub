@@ -11,6 +11,7 @@ _RepositoryPackageInformation _$RepositoryPackageInformationFromJson(Map<String,
   archiveUrl: json['archive_url'] as String,
   archiveSha256: json['archive_sha256'] as String?,
   pubspec: json['pubspec'] as Map<String, dynamic>,
+  published: json['published'] == null ? null : DateTime.parse(json['published'] as String),
 );
 
 Map<String, dynamic> _$RepositoryPackageInformationToJson(_RepositoryPackageInformation instance) => <String, dynamic>{
@@ -18,6 +19,7 @@ Map<String, dynamic> _$RepositoryPackageInformationToJson(_RepositoryPackageInfo
   'archive_url': instance.archiveUrl,
   if (instance.archiveSha256 case final value?) 'archive_sha256': value,
   'pubspec': instance.pubspec,
+  if (instance.published?.toIso8601String() case final value?) 'published': value,
 };
 
 _RepositoryPackageResponse _$RepositoryPackageResponseFromJson(Map<String, dynamic> json) => _RepositoryPackageResponse(

@@ -17,9 +17,11 @@ T _$identity<T>(T value) => value;
 mixin _$RepositoryPackageInformation {
 
  String get version;/// The archive_url may be temporary and is allowed to include query-string parameters. This allows for the server to return signed URLs for S3, GCS, or other blob storage services. If temporary URLs are returned it is wise to not set expiration to less than 25 minutes (to allow for retries and clock drift).
+/// Example: https://.../archive.tar.gz
 @JsonKey(name: 'archive_url') String get archiveUrl;/// The archive_sha256 should be the hex-encoded sha256 checksum of the file at archive_url. It is an optional field that allows the pub client to verify the integrity of the downloaded archive.
+/// Example: 95cbaad58e2cf32d1aa852f20af1fcda1820ead92a4b1447ea7ba1ba18195d27
 @JsonKey(name: 'archive_sha256', includeIfNull: false) String? get archiveSha256;/// The pubspec contents of package as JSON object
- Map<String, dynamic> get pubspec;
+ Map<String, dynamic> get pubspec;@JsonKey(includeIfNull: false) DateTime? get published;
 /// Create a copy of RepositoryPackageInformation
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -32,16 +34,16 @@ $RepositoryPackageInformationCopyWith<RepositoryPackageInformation> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RepositoryPackageInformation&&(identical(other.version, version) || other.version == version)&&(identical(other.archiveUrl, archiveUrl) || other.archiveUrl == archiveUrl)&&(identical(other.archiveSha256, archiveSha256) || other.archiveSha256 == archiveSha256)&&const DeepCollectionEquality().equals(other.pubspec, pubspec));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RepositoryPackageInformation&&(identical(other.version, version) || other.version == version)&&(identical(other.archiveUrl, archiveUrl) || other.archiveUrl == archiveUrl)&&(identical(other.archiveSha256, archiveSha256) || other.archiveSha256 == archiveSha256)&&const DeepCollectionEquality().equals(other.pubspec, pubspec)&&(identical(other.published, published) || other.published == published));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,version,archiveUrl,archiveSha256,const DeepCollectionEquality().hash(pubspec));
+int get hashCode => Object.hash(runtimeType,version,archiveUrl,archiveSha256,const DeepCollectionEquality().hash(pubspec),published);
 
 @override
 String toString() {
-  return 'RepositoryPackageInformation(version: $version, archiveUrl: $archiveUrl, archiveSha256: $archiveSha256, pubspec: $pubspec)';
+  return 'RepositoryPackageInformation(version: $version, archiveUrl: $archiveUrl, archiveSha256: $archiveSha256, pubspec: $pubspec, published: $published)';
 }
 
 
@@ -52,7 +54,7 @@ abstract mixin class $RepositoryPackageInformationCopyWith<$Res>  {
   factory $RepositoryPackageInformationCopyWith(RepositoryPackageInformation value, $Res Function(RepositoryPackageInformation) _then) = _$RepositoryPackageInformationCopyWithImpl;
 @useResult
 $Res call({
- String version,@JsonKey(name: 'archive_url') String archiveUrl,@JsonKey(name: 'archive_sha256', includeIfNull: false) String? archiveSha256, Map<String, dynamic> pubspec
+ String version,@JsonKey(name: 'archive_url') String archiveUrl,@JsonKey(name: 'archive_sha256', includeIfNull: false) String? archiveSha256, Map<String, dynamic> pubspec,@JsonKey(includeIfNull: false) DateTime? published
 });
 
 
@@ -69,13 +71,14 @@ class _$RepositoryPackageInformationCopyWithImpl<$Res>
 
 /// Create a copy of RepositoryPackageInformation
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? version = null,Object? archiveUrl = null,Object? archiveSha256 = freezed,Object? pubspec = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? version = null,Object? archiveUrl = null,Object? archiveSha256 = freezed,Object? pubspec = null,Object? published = freezed,}) {
   return _then(_self.copyWith(
 version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
 as String,archiveUrl: null == archiveUrl ? _self.archiveUrl : archiveUrl // ignore: cast_nullable_to_non_nullable
 as String,archiveSha256: freezed == archiveSha256 ? _self.archiveSha256 : archiveSha256 // ignore: cast_nullable_to_non_nullable
 as String?,pubspec: null == pubspec ? _self.pubspec : pubspec // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,
+as Map<String, dynamic>,published: freezed == published ? _self.published : published // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 
@@ -86,13 +89,15 @@ as Map<String, dynamic>,
 @JsonSerializable()
 
 class _RepositoryPackageInformation extends RepositoryPackageInformation {
-   _RepositoryPackageInformation({required this.version, @JsonKey(name: 'archive_url') required this.archiveUrl, @JsonKey(name: 'archive_sha256', includeIfNull: false) this.archiveSha256, required final  Map<String, dynamic> pubspec}): _pubspec = pubspec,super._();
+   _RepositoryPackageInformation({required this.version, @JsonKey(name: 'archive_url') required this.archiveUrl, @JsonKey(name: 'archive_sha256', includeIfNull: false) this.archiveSha256, required final  Map<String, dynamic> pubspec, @JsonKey(includeIfNull: false) this.published}): _pubspec = pubspec,super._();
   factory _RepositoryPackageInformation.fromJson(Map<String, dynamic> json) => _$RepositoryPackageInformationFromJson(json);
 
 @override final  String version;
 /// The archive_url may be temporary and is allowed to include query-string parameters. This allows for the server to return signed URLs for S3, GCS, or other blob storage services. If temporary URLs are returned it is wise to not set expiration to less than 25 minutes (to allow for retries and clock drift).
+/// Example: https://.../archive.tar.gz
 @override@JsonKey(name: 'archive_url') final  String archiveUrl;
 /// The archive_sha256 should be the hex-encoded sha256 checksum of the file at archive_url. It is an optional field that allows the pub client to verify the integrity of the downloaded archive.
+/// Example: 95cbaad58e2cf32d1aa852f20af1fcda1820ead92a4b1447ea7ba1ba18195d27
 @override@JsonKey(name: 'archive_sha256', includeIfNull: false) final  String? archiveSha256;
 /// The pubspec contents of package as JSON object
  final  Map<String, dynamic> _pubspec;
@@ -103,6 +108,7 @@ class _RepositoryPackageInformation extends RepositoryPackageInformation {
   return EqualUnmodifiableMapView(_pubspec);
 }
 
+@override@JsonKey(includeIfNull: false) final  DateTime? published;
 
 /// Create a copy of RepositoryPackageInformation
 /// with the given fields replaced by the non-null parameter values.
@@ -117,16 +123,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RepositoryPackageInformation&&(identical(other.version, version) || other.version == version)&&(identical(other.archiveUrl, archiveUrl) || other.archiveUrl == archiveUrl)&&(identical(other.archiveSha256, archiveSha256) || other.archiveSha256 == archiveSha256)&&const DeepCollectionEquality().equals(other._pubspec, _pubspec));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RepositoryPackageInformation&&(identical(other.version, version) || other.version == version)&&(identical(other.archiveUrl, archiveUrl) || other.archiveUrl == archiveUrl)&&(identical(other.archiveSha256, archiveSha256) || other.archiveSha256 == archiveSha256)&&const DeepCollectionEquality().equals(other._pubspec, _pubspec)&&(identical(other.published, published) || other.published == published));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,version,archiveUrl,archiveSha256,const DeepCollectionEquality().hash(_pubspec));
+int get hashCode => Object.hash(runtimeType,version,archiveUrl,archiveSha256,const DeepCollectionEquality().hash(_pubspec),published);
 
 @override
 String toString() {
-  return 'RepositoryPackageInformation(version: $version, archiveUrl: $archiveUrl, archiveSha256: $archiveSha256, pubspec: $pubspec)';
+  return 'RepositoryPackageInformation(version: $version, archiveUrl: $archiveUrl, archiveSha256: $archiveSha256, pubspec: $pubspec, published: $published)';
 }
 
 
@@ -137,7 +143,7 @@ abstract mixin class _$RepositoryPackageInformationCopyWith<$Res> implements $Re
   factory _$RepositoryPackageInformationCopyWith(_RepositoryPackageInformation value, $Res Function(_RepositoryPackageInformation) _then) = __$RepositoryPackageInformationCopyWithImpl;
 @override @useResult
 $Res call({
- String version,@JsonKey(name: 'archive_url') String archiveUrl,@JsonKey(name: 'archive_sha256', includeIfNull: false) String? archiveSha256, Map<String, dynamic> pubspec
+ String version,@JsonKey(name: 'archive_url') String archiveUrl,@JsonKey(name: 'archive_sha256', includeIfNull: false) String? archiveSha256, Map<String, dynamic> pubspec,@JsonKey(includeIfNull: false) DateTime? published
 });
 
 
@@ -154,13 +160,14 @@ class __$RepositoryPackageInformationCopyWithImpl<$Res>
 
 /// Create a copy of RepositoryPackageInformation
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? version = null,Object? archiveUrl = null,Object? archiveSha256 = freezed,Object? pubspec = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? version = null,Object? archiveUrl = null,Object? archiveSha256 = freezed,Object? pubspec = null,Object? published = freezed,}) {
   return _then(_RepositoryPackageInformation(
 version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
 as String,archiveUrl: null == archiveUrl ? _self.archiveUrl : archiveUrl // ignore: cast_nullable_to_non_nullable
 as String,archiveSha256: freezed == archiveSha256 ? _self.archiveSha256 : archiveSha256 // ignore: cast_nullable_to_non_nullable
 as String?,pubspec: null == pubspec ? _self._pubspec : pubspec // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,
+as Map<String, dynamic>,published: freezed == published ? _self.published : published // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 

@@ -4,7 +4,10 @@ import 'dart:typed_data';
 
 import '/core/controller.dart';
 import '/core/logger.dart';
-import '../../data/package_request.dart';
+import '/core/response/error.dart';
+import '/data/package_request.dart';
+import '/repository/git_package.dart';
+import 'data/response.dart';
 
 class RepositoryPackageApi extends RouteController {
   RepositoryPackageApi(super.router);
@@ -13,41 +16,31 @@ class RepositoryPackageApi extends RouteController {
   void build(Router router) {
     router.get('/<hosted>/<owner>/<repository>/api/packages/<package>', listVersionsOfPackage);
     router.get('/<hosted>/<owner>/<repository>/api/packages/<package>/<version>/archive.tar.gz', getPackageArchive);
+    router.get('/<hosted>/<owner>/<repository>/api/packages/versions/new', unsupportedInternalServerError);
+    router.get('/<hosted>/<owner>/<repository>/api/packages/<package>/advisories', listSecurityAdvisories);
   }
 
-  FutureOr<Response> listVersionsOfPackage(Request request) {
+  FutureOr<Response> listVersionsOfPackage(Request request) async {
     final logger = logging.of(request);
     final packageRequest = PackageRequest.fromJson(request.params);
-    logger.info('Getting repository ${packageRequest.repository}');
 
-    logger.config(json.encode({'params': request.params}));
+    logger.fine(json.encode({'params': request.params}));
+
+    final repo = GitPackageRepository();
+
+    final versions = await repo.getVersions(packageRequest);
+
+    if (versions.isEmpty) {
+      return Response.notFound(
+        json.encode({
+          'error': {'code': 'NoSuchKey', 'message': 'The requested package does not exist.'},
+        }),
+        headers: {'Content-Type': 'application/vnd.pub.v2+json'},
+      );
+    }
 
     return Response.ok(
-      json.encode({
-        "name": request.params['package'],
-        "latest": {
-          "version": "<version>",
-          // The archive_url may be temporary and is allowed to include query-string parameters. This allows for the server to return signed URLs for S3, GCS, or other blob storage services. If temporary URLs are returned it is wise to not set expiration to less than 25 minutes (to allow for retries and clock drift).
-          "archive_url": "https://.../archive.tar.gz",
-          // can be absent if unavailable
-          // The archive_sha256 should be the hex-encoded sha256 checksum of the file at archive_url. It is an optional field that allows the pub client to verify the integrity of the downloaded archive.
-          "archive_sha256": "95cbaad58e2cf32d1aa852f20af1fcda1820ead92a4b1447ea7ba1ba18195d27",
-          "pubspec": {
-            /* pubspec contents as JSON object */
-          },
-        },
-        "versions": [
-          {
-            "version": "<package>",
-            "archive_url": "https://.../archive.tar.gz",
-            "archive_sha256": "95cbaad58e2cf32d1aa852f20af1fcda1820ead92a4b1447ea7ba1ba18195d27",
-            "pubspec": {
-              /* pubspec contents as JSON object */
-            },
-          },
-          /* additional versions */
-        ],
-      }),
+      json.encode({"name": request.params['package'], "latest": versions.firstRecommended(), "versions": versions}),
       headers: {'Content-Type': 'application/vnd.pub.v2+json'},
     );
   }
@@ -57,5 +50,22 @@ class RepositoryPackageApi extends RouteController {
     logger.info('Getting repository ${request.params['repository']}');
     logger.config(json.encode({'params': request.params}));
     return Response.ok(Uint8List(0), headers: {'Content-Type': 'application/gzip', 'Content-Encoding': 'gzip'});
+  }
+
+  FutureOr<Response> listSecurityAdvisories(Request request) {
+    final logger = logging.of(request);
+    logger.config(json.encode({'params': request.params}));
+    return Response.ok(
+      json.encode({
+        "advisories": const [
+          // {
+          //  /* Security advisory in OSV format, see https://ossf.github.io/osv-schema/ */
+          // },
+          /* additional security advisories */
+        ],
+        "advisoriesUpdated": DateTime.now().toUtc().toIso8601String(),
+      }),
+      headers: {'Content-Type': 'application/vnd.pub.v2+json'},
+    );
   }
 }

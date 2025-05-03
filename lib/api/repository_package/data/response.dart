@@ -1,10 +1,11 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:pub_semver/pub_semver.dart';
 
 part 'response.freezed.dart';
 part 'response.g.dart';
 
 @freezed
-sealed class RepositoryPackageInformation with _$RepositoryPackageInformation {
+sealed class RepositoryPackageInformation with _$RepositoryPackageInformation implements Comparable<RepositoryPackageInformation> {
   factory RepositoryPackageInformation({
     required String version,
 
@@ -18,11 +19,26 @@ sealed class RepositoryPackageInformation with _$RepositoryPackageInformation {
 
     /// The pubspec contents of package as JSON object
     required Map<String, dynamic> pubspec,
+
+    @JsonKey(includeIfNull: false) DateTime? published,
   }) = _RepositoryPackageInformation;
 
   const RepositoryPackageInformation._();
 
   factory RepositoryPackageInformation.fromJson(Map<String, dynamic> json) => _$RepositoryPackageInformationFromJson(json);
+
+  @override
+  int compareTo(covariant RepositoryPackageInformation other) {
+    return Version.parse(version).compareTo(Version.parse(other.version));
+  }
+}
+
+extension IterableOfRepositoryPackageInformation on Iterable<RepositoryPackageInformation> {
+  RepositoryPackageInformation firstRecommended() {
+    final packages = [...this];
+    packages.sort((a, b) => Version.prioritize(Version.parse(a.version), Version.parse(b.version)));
+    return packages.first;
+  }
 }
 
 @freezed
