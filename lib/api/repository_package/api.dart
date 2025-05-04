@@ -6,7 +6,8 @@ import '/core/controller.dart';
 import '/core/logger.dart';
 import '/core/response/error.dart';
 import '/data/package_request.dart';
-import '/repository/git_package.dart';
+import '../../repository/git_package/git_package.dart';
+import '../../service/git_package.dart';
 import 'data/response.dart';
 
 class RepositoryPackageApi extends RouteController {
@@ -26,7 +27,7 @@ class RepositoryPackageApi extends RouteController {
 
     logger.fine(json.encode({'params': request.params}));
 
-    final repo = GitPackageRepository();
+    final repo = GitPackageRepository(GitPackageIOService());
 
     final versions = await repo.getVersions(packageRequest);
 
